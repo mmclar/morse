@@ -1,23 +1,28 @@
 /* Much code from http://patorjk.com/blog/2012/07/22/tone-playing-experiment-with-html5s-web-audio-api/ */
 
-var morse = (function(){
-    var base_length = .05,
-        dot_l = 1, dash_l = 3, beep_sep_l = 1, letter_sep_l = 5, wordsep_l = 10,
-        context = new webkitAudioContext(),
+var audio = (function() {
+    var  context = new webkitAudioContext(),
         getOscillator = function() {
             var oscillator = context.createOscillator();
             oscillator.type = 0; // sine wave
             oscillator.frequency.value = 1000;
             oscillator.connect(context.destination);
             return oscillator;
-        },
-        tone = function(length, cb) {
+        };
+    return {
+        tone: function(length, cb) {
             var oscillator = getOscillator(),
                 curTime = context.currentTime;
             oscillator.start(curTime);
             oscillator.stop(curTime + length);
             oscillator.onended = cb;
-        },
+        }
+    };
+})();
+
+var morse = (function(){
+    var base_length = .05,
+        dot_l = 1, dash_l = 3, beep_sep_l = 1, letter_sep_l = 5, wordsep_l = 10,
         /* Send some beeps and call back when done. */
         doBeeps = function(beeps, cb) {
             doBeep(beeps[0], function() {
@@ -35,7 +40,7 @@ var morse = (function(){
         }
         /* Send a single beep and call back when done. */
         doBeep = function(length, cb) {
-            tone(length * base_length, cb);
+            audio.tone(length * base_length, cb);
         };
     return {
         codes: { 'a': '.-', 'b': '-...', 'c': '-.-.', 'd': '-..', 'e': '.',
@@ -44,8 +49,6 @@ var morse = (function(){
                 'p': '.--.', 'q': '--.-', 'r': '.-.', 's': '...', 't': '-',
                 'u': '..-', 'v': '...-', 'w': '.--', 'x': '-..-', 'y': '-.--',
                 'z': '--..' },
-        dob: doBeeps,
-        t: tone,
         sendLetter: function(letter, cb) {
             var i,
                 code = morse.codes[letter],
