@@ -5,7 +5,7 @@ randomMorse = {
         for (var i = 0; i < 5; i++) {
             randomMorse.letters.push('abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random() * 26)]);
         }
-        document.body.write('Letters are: ' + randomMorse.letters);
+        document.write('Letters are: ' + randomMorse.letters);
         randomMorse.next();
     },
 
@@ -15,7 +15,7 @@ randomMorse = {
         }
         if (String.fromCharCode(e.charCode) == randomMorse.lastLetter) {
             morse.sendLetter(randomMorse.lastLetter);
-            document.body.write(' ' + randomMorse.lastLetter);
+            document.write(' ' + randomMorse.lastLetter);
             setTimeout(function() {
                 randomMorse.next();
             }, 1000);
@@ -25,7 +25,7 @@ randomMorse = {
 
     next: function() {
         randomMorse.lastLetter = randomMorse.letters[Math.floor(Math.random() * randomMorse.letters.length)];
-        document.body.write('<br>' + morse.codes[randomMorse.lastLetter]);
+        document.write('<br>' + morse.codes[randomMorse.lastLetter]);
         morse.sendLetter(randomMorse.lastLetter);
     }
 };
