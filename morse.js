@@ -8,14 +8,23 @@ var audio = (function() {
             oscillator.frequency.value = 1000;
             oscillator.connect(context.destination);
             return oscillator;
-        };
+        },
+        oscillator = getOscillator();
     return {
         tone: function(length, cb) {
-            var oscillator = getOscillator(),
-                curTime = context.currentTime;
-            oscillator.start(curTime);
-            oscillator.stop(curTime + length);
+            var curTime = context.currentTime;
             oscillator.onended = cb;
+            audio.start(curTime);
+            audio.end(curTime + length);
+        },
+        start: function(when) {
+            when = when ? when : 0;
+            oscillator.start(when);
+        },
+        end: function(when) {
+            when = when ? when : 0;
+            oscillator.stop(when);
+            oscillator = getOscillator();
         }
     };
 })();
