@@ -1,0 +1,21 @@
+outletter up:
+  event down:
+    startaudio()
+    movestate(inletter down)
+
+inletter down:
+  event up:
+    push (timesince < dotcuttoff ? dot : dash) onto tonestack
+    starttimer()
+    stopaudio()
+    movestate(inletter up)
+
+inletter up:
+  event down:
+    startaudio()
+    starttimer()
+    if timer > newlettercuttoff:
+      push(decipher letter from letterstack) onto letterstack
+      clear tonestack
+      movestate(inletter down)
+    movestate(inletter down)
