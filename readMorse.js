@@ -1,6 +1,6 @@
 readMorse = {
     DOT_CUTOFF: 200,
-    LETTER_CUTOFF: 1000,
+    LETTER_CUTOFF: 300,
 
     tones: [],
     letters: [],
@@ -23,6 +23,11 @@ readMorse = {
                     readMorse.tones.push(readMorse.timeSinceLast() < readMorse.DOT_CUTOFF ? '.' : '-');
                     audio.end();
                     readMorse.moveState(readMorse.states.inLetterUp);
+                    readMorse.pushTimer = setTimeout(function() {
+                        readMorse.letters.push(readMorse.decipher(readMorse.tones));
+                        readMorse.tones = [];
+                        document.getElementById('output').innerHTML = readMorse.letters.join('');
+                    }, readMorse.LETTER_CUTOFF);
                 }
             }
         },
@@ -31,10 +36,6 @@ readMorse = {
             events: {
                 down: function() {
                     audio.start();
-                    if (readMorse.timeSinceLast() > readMorse.LETTER_CUTOFF) {
-                        readMorse.letters.push(readMorse.decipher(readMorse.tones));
-                        readMorse.tones = [];
-                    }
                     readMorse.moveState(readMorse.states.inLetterDown);
                 }
             }
@@ -53,6 +54,7 @@ readMorse = {
         document.onkeydown = this.currentState.events.down;
         document.onkeyup = this.currentState.events.up;
         readMorse.timeMark = new Date().getTime();
+        clearTimeout(readMorse.pushTimer);
     },
 
     timeSinceLast: function() {
