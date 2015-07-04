@@ -47,11 +47,17 @@ readMorse = {
     },
 
     moveState: function(newState) {
-        console.log('Moving to ' + newState.name + '.');
-        console.log('Tones: ' + readMorse.tones);
-        console.log('Letters: ' + readMorse.letters);
         readMorse.currentState = newState;
-        document.onkeydown = this.currentState.events.down;
+        document.onkeydown = function(e) {
+            var ignoreCodes = [17, 18, 27];
+            if (ignoreCodes.indexOf(e.keyCode) < 0) {
+                readMorse.currentState.events.down();
+            }
+            if (e.keyCode == 27) {
+                readMorse.letters = [];
+                document.getElementById('output').innerHTML = '';
+            }
+        }
         document.onkeyup = this.currentState.events.up;
         readMorse.timeMark = new Date().getTime();
         clearTimeout(readMorse.pushTimer);
